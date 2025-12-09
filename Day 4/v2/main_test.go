@@ -83,3 +83,87 @@ x.x.@@@.x.`
 		t.Errorf("Expected %v to equal %v", newMap, expectedNewMap)
 	}
 }
+
+func TestWithPadding(t *testing.T) {
+	input := `..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.`
+	expected := [][]string{
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", "@", "@", ".", "@", "@", "@", "@", ".", "."},
+		{".", "@", "@", "@", ".", "@", ".", "@", ".", "@", "@", "."},
+		{".", "@", "@", "@", "@", "@", ".", "@", ".", "@", "@", "."},
+		{".", "@", ".", "@", "@", "@", "@", ".", ".", "@", ".", "."},
+		{".", "@", "@", ".", "@", "@", "@", "@", ".", "@", "@", "."},
+		{".", ".", "@", "@", "@", "@", "@", "@", "@", ".", "@", "."},
+		{".", ".", "@", ".", "@", ".", "@", ".", "@", "@", "@", "."},
+		{".", "@", ".", "@", "@", "@", ".", "@", "@", "@", "@", "."},
+		{".", ".", "@", "@", "@", "@", "@", "@", "@", "@", ".", "."},
+		{".", "@", ".", "@", ".", "@", "@", "@", ".", "@", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+	}
+	output := parseInput(input)
+	paddedOutput := padMapWith(output)
+	if !reflect.DeepEqual(paddedOutput, expected) {
+		t.Errorf("Expected %v to equal %v", output, expected)
+	}
+}
+
+func TestAccessibleRollsWithPadding(t *testing.T) {
+	input := `..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.`
+	paddedMap := padMapWith(parseInput(input))
+	count, _ := accessibleRollsWithPadding(paddedMap)
+	expectedCount := 13
+	if count != expectedCount {
+		t.Errorf("Expected %d to be %d", count, expectedCount)
+	}
+}
+
+func BenchmarkAccessibleRolls(b *testing.B) {
+	input := `..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.`
+	for b.Loop() {
+		accessibleRolls(parseInput(input))
+	}
+}
+func BenchmarkAccessibleRollsWithPadding(b *testing.B) {
+	input := `..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.`
+	paddedMap := padMapWith(parseInput(input))
+
+	for b.Loop() {
+		accessibleRollsWithPadding(paddedMap)
+	}
+}

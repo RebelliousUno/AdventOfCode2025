@@ -43,6 +43,57 @@ func removeRolls(warehouseMap [][]string) [][]string {
 	return warehouseMap
 }
 
+func padMapWith(inputMap [][]string) [][]string {
+	newMap := make([][]string, 0)
+	rowPadding := make([]string, 2+len(inputMap[0]))
+	for i, _ := range rowPadding {
+		rowPadding[i] = "."
+	}
+	newMap = append(newMap, rowPadding)
+	for _, v := range inputMap {
+		newRow := make([]string, 0)
+		newRow = append(newRow, ".")
+		newRow = append(newRow, v...)
+		newRow = append(newRow, ".")
+		newMap = append(newMap, newRow)
+	}
+	newMap = append(newMap, rowPadding)
+	return newMap
+}
+
+func accessibleRollsWithPadding(paddedMap [][]string) (int, [][]string) {
+	sum := 0
+	xDimension := len(paddedMap[0]) - 1
+	yDimension := len(paddedMap) - 1  //-1 because padded
+	for x := 1; x < xDimension; x++ { //1 offset because padded
+		for y := 1; y < yDimension; y++ {
+			this := paddedMap[x][y]
+			if this != "@" {
+				// if the value we're looking at is not @ we just skip
+				continue
+			}
+			adjacentCount := 0
+
+			adjacentCount += addAdjacentCount(paddedMap[x-1][y])
+			adjacentCount += addAdjacentCount(paddedMap[x-1][y-1])
+			adjacentCount += addAdjacentCount(paddedMap[x-1][y+1])
+			adjacentCount += addAdjacentCount(paddedMap[x+1][y])
+			adjacentCount += addAdjacentCount(paddedMap[x+1][y-1])
+			adjacentCount += addAdjacentCount(paddedMap[x+1][y+1])
+			adjacentCount += addAdjacentCount(paddedMap[x][y-1])
+			adjacentCount += addAdjacentCount(paddedMap[x][y+1])
+			if adjacentCount < 4 {
+				sum++
+				paddedMap[x][y] = "x"
+			}
+		}
+	}
+	return sum, paddedMap
+}
+
+// Could probably make this simpler if we pad the warehouse map with . all around the edge,
+// and then only check the inner,
+// Then we know we're not going to go out of bounds
 func accessibleRolls(warehouseMap [][]string) (int, [][]string) {
 	sum := 0
 	xDimension := len(warehouseMap[0])
