@@ -171,7 +171,7 @@ func compressRanges(r RangeList) RangeList {
 }
 
 func countRanges(rl RangeList) int {
-	sum:= 0
+	sum := 0
 	for _, v := range rl.ranges {
 		sum += v.rangeSize()
 	}
