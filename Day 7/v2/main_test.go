@@ -1,0 +1,313 @@
+package main
+
+import (
+	"fmt"
+	"reflect"
+	"testing"
+)
+
+func Test_doStepOneMap(t *testing.T) {
+	input := []string{
+		".......S.......",
+		"...............",
+		".......^.......",
+		"...............",
+		"......^.^......",
+		"...............",
+		".....^.^.^.....",
+		"...............",
+		"....^.^...^....",
+		"...............",
+		"...^.^...^.^...",
+		"...............",
+		"..^...^.....^..",
+		"...............",
+		".^.^.^.^.^...^.",
+		"...............",
+	}
+	tachyonMap := TacyonMap{}
+	tachyonMap.parseDiagramToMap(input)
+
+	expectedEmissions := [][]int{{7}, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil}
+	expectedStep := 1
+	ok := tachyonMap.doStep()
+	if !ok {
+		t.Errorf("Expected ok to be %v", true)
+	}
+	if tachyonMap.currentStep != expectedStep {
+		t.Errorf("Expected %d to be %d", tachyonMap.currentStep, expectedStep)
+	}
+	if !reflect.DeepEqual(tachyonMap.emitterPositions, expectedEmissions) {
+		t.Errorf("Expected \n%v to be \n%v", tachyonMap.emitterPositions, expectedEmissions)
+	}
+
+}
+
+func Test_doStepTwoMap(t *testing.T) {
+	input := []string{
+		".......S.......",
+		"...............",
+		".......^.......",
+		"...............",
+		"......^.^......",
+		"...............",
+		".....^.^.^.....",
+		"...............",
+		"....^.^...^....",
+		"...............",
+		"...^.^...^.^...",
+		"...............",
+		"..^...^.....^..",
+		"...............",
+		".^.^.^.^.^...^.",
+		"...............",
+	}
+	expectedOutput := [][]string{
+		{".", ".", ".", ".", ".", ".", ".", "S", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", "|", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", "^", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", "^", ".", "^", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", "^", ".", "^", ".", "^", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", "^", ".", "^", ".", ".", ".", "^", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", "^", ".", "^", ".", ".", ".", "^", ".", "^", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", "^", ".", ".", ".", "^", ".", ".", ".", ".", ".", "^", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", "^", ".", "^", ".", "^", ".", "^", ".", "^", ".", ".", ".", "^", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+	}
+	tachyonMap := TacyonMap{}
+	tachyonMap.parseDiagramToMap(input)
+
+	expectedEmissions := [][]int{{7}, {7}, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil}
+	expectedStep := 2
+	ok := tachyonMap.doStep()
+	if !ok {
+		t.Errorf("Expected ok to be %v", true)
+	}
+	ok2 := tachyonMap.doStep()
+	if !ok2 {
+		t.Errorf("Expected ok2 to be %v", true)
+	}
+	if tachyonMap.currentStep != expectedStep {
+		t.Errorf("Expected %d to be %d", tachyonMap.currentStep, expectedStep)
+	}
+	if !reflect.DeepEqual(tachyonMap.emitterPositions, expectedEmissions) {
+		t.Errorf("Expected \n%v to be \n%v", tachyonMap.emitterPositions, expectedEmissions)
+	}
+	if !reflect.DeepEqual(tachyonMap.currentState, expectedOutput) {
+		t.Errorf("Expected %v to equal %v", tachyonMap.currentState, expectedOutput)
+	}
+}
+
+func Test_doStepThreeMap(t *testing.T) {
+	input := []string{
+		".......S.......",
+		"...............",
+		".......^.......",
+		"...............",
+		"......^.^......",
+		"...............",
+		".....^.^.^.....",
+		"...............",
+		"....^.^...^....",
+		"...............",
+		"...^.^...^.^...",
+		"...............",
+		"..^...^.....^..",
+		"...............",
+		".^.^.^.^.^...^.",
+		"...............",
+	}
+	expectedOutput := [][]string{
+		{".", ".", ".", ".", ".", ".", ".", "S", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", "|", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", "|", "^", "|", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", "^", ".", "^", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", "^", ".", "^", ".", "^", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", "^", ".", "^", ".", ".", ".", "^", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", "^", ".", "^", ".", ".", ".", "^", ".", "^", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", "^", ".", ".", ".", "^", ".", ".", ".", ".", ".", "^", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", "^", ".", "^", ".", "^", ".", "^", ".", "^", ".", ".", ".", "^", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+	}
+	tachyonMap := TacyonMap{}
+	tachyonMap.parseDiagramToMap(input)
+
+	expectedEmissions := [][]int{{7}, {7}, {6, 8}, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil}
+	expectedStep := 3
+	ok := tachyonMap.doStep()
+	if !ok {
+		t.Errorf("Expected ok to be %v", true)
+	}
+	ok2 := tachyonMap.doStep()
+	if !ok2 {
+		t.Errorf("Expected ok2 to be %v", true)
+	}
+	ok3 := tachyonMap.doStep()
+	if !ok3 {
+		t.Errorf("Expected ok3 to be %v", true)
+	}
+	if tachyonMap.currentStep != expectedStep {
+		t.Errorf("Expected %d to be %d", tachyonMap.currentStep, expectedStep)
+	}
+	if !reflect.DeepEqual(tachyonMap.emitterPositions, expectedEmissions) {
+		t.Errorf("Expected \n%v to be \n%v", tachyonMap.emitterPositions, expectedEmissions)
+	}
+	if !reflect.DeepEqual(tachyonMap.currentState, expectedOutput) {
+		t.Errorf("Expected %v to equal %v", tachyonMap.currentState, expectedOutput)
+	}
+}
+
+func Test_doStepUntilEndMap(t *testing.T) {
+	input := []string{
+		".......S.......",
+		"...............",
+		".......^.......",
+		"...............",
+		"......^.^......",
+		"...............",
+		".....^.^.^.....",
+		"...............",
+		"....^.^...^....",
+		"...............",
+		"...^.^...^.^...",
+		"...............",
+		"..^...^.....^..",
+		"...............",
+		".^.^.^.^.^...^.",
+		"...............",
+	}
+	expectedOutput := [][]string{
+		{".", ".", ".", ".", ".", ".", ".", "S", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", "|", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", "|", "^", "|", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", "|", ".", "|", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", "|", "^", "|", "^", "|", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", "|", ".", "|", ".", "|", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", "|", "^", "|", "^", "|", "^", "|", ".", ".", ".", "."},
+		{".", ".", ".", ".", "|", ".", "|", ".", "|", ".", "|", ".", ".", ".", "."},
+		{".", ".", ".", "|", "^", "|", "^", "|", "|", "|", "^", "|", ".", ".", "."},
+		{".", ".", ".", "|", ".", "|", ".", "|", "|", "|", ".", "|", ".", ".", "."},
+		{".", ".", "|", "^", "|", "^", "|", "|", "|", "^", "|", "^", "|", ".", "."},
+		{".", ".", "|", ".", "|", ".", "|", "|", "|", ".", "|", ".", "|", ".", "."},
+		{".", "|", "^", "|", "|", "|", "^", "|", "|", ".", "|", "|", "^", "|", "."},
+		{".", "|", ".", "|", "|", "|", ".", "|", "|", ".", "|", "|", ".", "|", "."},
+		{"|", "^", "|", "^", "|", "^", "|", "^", "|", "^", "|", "|", "|", "^", "|"},
+		{"|", ".", "|", ".", "|", ".", "|", ".", "|", ".", "|", "|", "|", ".", "|"},
+	}
+	tachyonMap := TacyonMap{}
+	tachyonMap.parseDiagramToMap(input)
+	for {
+		ok := tachyonMap.doStep()
+		if !ok {
+			break
+		}
+	}
+	expectedStep := len(input)
+	expectedSplits := 21
+	if tachyonMap.currentStep != expectedStep {
+		t.Errorf("Expected current step %d to be %d", tachyonMap.currentStep, expectedStep)
+	}
+	if !reflect.DeepEqual(tachyonMap.currentState, expectedOutput) {
+		t.Errorf("Expected state %v to equal %v", tachyonMap.currentState, expectedOutput)
+	}
+	if tachyonMap.numSplits != expectedSplits {
+		t.Errorf("Expected splits %d to be %d", tachyonMap.numSplits, expectedSplits)
+	}
+}
+
+func Test_parseTachyonMap(t *testing.T) {
+	input := []string{
+		".......S.......",
+		"...............",
+		".......^.......",
+		"...............",
+		"......^.^......",
+		"...............",
+		".....^.^.^.....",
+		"...............",
+		"....^.^...^....",
+		"...............",
+		"...^.^...^.^...",
+		"...............",
+		"..^...^.....^..",
+		"...............",
+		".^.^.^.^.^...^.",
+		"...............",
+	}
+	expectedOutput := [][]string{
+		{".", ".", ".", ".", ".", ".", ".", "S", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", "^", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", "^", ".", "^", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", "^", ".", "^", ".", "^", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", ".", "^", ".", "^", ".", ".", ".", "^", ".", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", ".", "^", ".", "^", ".", ".", ".", "^", ".", "^", ".", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", ".", "^", ".", ".", ".", "^", ".", ".", ".", ".", ".", "^", ".", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+		{".", "^", ".", "^", ".", "^", ".", "^", ".", "^", ".", ".", ".", "^", "."},
+		{".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", ".", "."},
+	}
+	tachyonMap := TacyonMap{}
+	tachyonMap.parseDiagramToMap(input)
+	if !reflect.DeepEqual(tachyonMap.currentState, expectedOutput) {
+		t.Errorf("Expected %v to equal %v", tachyonMap.currentState, expectedOutput)
+	}
+	if tachyonMap.currentStep != 0 {
+		t.Errorf("Expected %d to equal %d", tachyonMap.currentStep, 0)
+	}
+}
+
+func Test_countTimelines(t *testing.T) {
+	input := []string{
+		".......S.......",
+		"...............",
+		".......^.......",
+		"...............",
+		"......^.^......",
+		"...............",
+		".....^.^.^.....",
+		"...............",
+		"....^.^...^....",
+		"...............",
+		"...^.^...^.^...",
+		"...............",
+		"..^...^.....^..",
+		"...............",
+		".^.^.^.^.^...^.",
+		"...............",
+	}
+	tachyonMap := TacyonMap{}
+	tachyonMap.parseDiagramToMap(input)
+	for {
+		ok := tachyonMap.doStep()
+		if !ok {
+			break
+		}
+	}
+	expectedTimelines := 40
+	timelines, err := tachyonMap.countTimelines3()
+	if err != nil {
+		t.Error("Expected err to be nil", err)
+	}
+	fmt.Printf("%v", tachyonMap.emitterPositions)
+	if timelines != expectedTimelines {
+		t.Errorf("Expected %d to equal %d", timelines, expectedTimelines)
+	}
+}
